@@ -1,0 +1,1 @@
+rm -f *.log; rm -f ./NotSpam/*.1; rm -f ./Spam/*.1; rm -f ./NotSpam/cmds; rm -f ./Spam/cmds; rm -f 1.*
