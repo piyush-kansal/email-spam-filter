@@ -1,4 +1,4 @@
 Email Spam Filter using Artificial Intelligence
 
-- Accuracy 80%
+- Accuracy 70%
 - Platform: Linux
