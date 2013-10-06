@@ -39,19 +39,19 @@ int Get_pos(vector <nGram>&, int);
 int main( int argc, char* argv[] )
 {
 	if( argc != 6 ) {
-                cout << "Invalid no of arguments" << endl;
-                cout << "Usage: ./checkForSpam <not-spam-prob-file> <spam-prob-file> <file-to-be-checked>" << endl;
-                return 1; 
-        }
+        cout << "Invalid no of arguments" << endl;
+        cout << "Usage: ./checkForSpam <not-spam-prob-file> <spam-prob-file> <file-to-be-checked>" << endl;
+        return 1; 
+    }
 
-        string notSpamProbFile = argv[1];
-        string spamProbFile = argv[2]; 
-        string toCheckFile = argv[3];
-        unsigned int notSpamCnt = atoi( argv[4] );
-        unsigned int spamCnt = atoi( argv[5] );
+    string notSpamProbFile = argv[1];
+    string spamProbFile = argv[2]; 
+    string toCheckFile = argv[3];
+    unsigned int notSpamCnt = atoi( argv[4] );
+    unsigned int spamCnt = atoi( argv[5] );
 
-        nSPHash.reserve( FNV_32_PRIME );
-        sPHash.reserve( FNV_32_PRIME );
+    nSPHash.reserve( FNV_32_PRIME );
+    sPHash.reserve( FNV_32_PRIME );
 
 	InitializeHash();
 
@@ -62,7 +62,11 @@ int main( int argc, char* argv[] )
 	double sP = 1.0;
 
 	ifstream file (toCheckFile.c_str());
-	
+
+	// Using Naive Bayes theorem, calculate probability for spam
+	// P(Spam, word1, . . . , wordn) = P(Spam)ΠiP(wordi|Spam)
+	// P(NotSpam, word1, . . . , wordn) = P(NotSpam)ΠiP(wordi|NotSpam)
+	// In this loop, we are calculation P(wordi|Spam) and P(wordi|NotSpam)
 	if(file.is_open())
 	{
 		while ( file.good() ) 
@@ -102,18 +106,19 @@ int main( int argc, char* argv[] )
 		}
 	}
 
-	nSP = ((double)notSpamCnt)/((double)notSpamCnt + (double)spamCnt);
-	sP = ((double)spamCnt)/((double)notSpamCnt + (double)spamCnt);
+	// This is calculating P(Spam) and P(NotSpam)
+	nSP *= ((double)notSpamCnt)/((double)notSpamCnt + (double)spamCnt);
+	sP *= ((double)spamCnt)/((double)notSpamCnt + (double)spamCnt);
 
-        cout << "Probability for Not Spam :: " << nSP << endl;
-        cout << "Probability for Spam :: " << sP << endl;
+	cout << "Probability for Not Spam :: " << nSP << endl;
+	cout << "Probability for Spam :: " << sP << endl;
 
-        if( nSP > sP )
-                cout << "It is a not a spam" << endl;
-        else if( nSP < sP )
-                cout << "It is a spam" << endl;
-        else
-                cout << "OOPS !! I just cant figure it out. May be you didnt train me well ;)" << endl;
+    if( nSP > sP )
+        cout << "It is a not a spam" << endl;
+    else if( nSP < sP )
+        cout << "It is a spam" << endl;
+    else
+        cout << "OOPS !! I just cant figure it out. May be you didnt train me well ;)" << endl;
 
 	return 0;
 }
